@@ -12,6 +12,7 @@ import argparse
 import json
 import re
 import sys
+from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
@@ -21,8 +22,8 @@ from pipeline.cleanup import clean_transcript
 from pipeline.enrich import enrich_segment
 from pipeline.models import ClientResponseDoc, TranscriptTurn
 from pipeline.render import render
-from pipeline.segment import analyze_call
-from pipeline.transcribe import CallTranscript, transcribe
+from pipeline.segment import CallSegment, analyze_call
+from pipeline.transcribe import CallTranscript, Utterance, transcribe
 
 
 _DATE_RE = re.compile(r"^(?P<date>\d{4}-\d{2}-\d{2})\s")
@@ -75,26 +76,33 @@ def main(argv: list[str] | None = None) -> int:
     output_dir = _ROOT / "data" / "output"
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    grouped = _group_segments_by_client(analysis.segments)
+
     written: list[Path] = []
-    for seg in analysis.segments:
-        utts = call.utterances[seg.start_utterance_idx:seg.end_utterance_idx]
+    for client_key, segs in grouped.items():
+        utts: list[Utterance] = []
+        for seg in segs:
+            utts.extend(call.utterances[seg.start_utterance_idx:seg.end_utterance_idx])
         if not utts:
-            print(f"             ! empty segment for {seg.client_first_name} {seg.client_last_name}; skipping")
+            print(f"             ! empty segment(s) for {client_key}; skipping")
             continue
 
         seg_text = "\n".join(
             f"{speaker_to_name.get(u.speaker, u.speaker)}: {u.text}" for u in utts
         )
 
-        print(f"[enrich]     {seg.client_first_name} {seg.client_last_name} (utt {seg.start_utterance_idx}..{seg.end_utterance_idx}, {len(utts)} utterances)")
+        rep = segs[0]
+        suffix = f" (merged x{len(segs)})" if len(segs) > 1 else ""
+        ranges = ", ".join(f"{s.start_utterance_idx}..{s.end_utterance_idx}" for s in segs)
+        print(f"[enrich]     {rep.client_first_name} {rep.client_last_name}{suffix} utts [{ranges}], {len(utts)} total")
         e = enrich_segment(seg_text, model=args.openai_model)
 
         turns = _group_consecutive_speakers(utts, speaker_to_name)
         doc = ClientResponseDoc(
             call_date=call_date,
-            client_first_name=seg.client_first_name,
-            client_last_name=seg.client_last_name,
-            client_display_name=seg.client_display_name,
+            client_first_name=rep.client_first_name,
+            client_last_name=rep.client_last_name,
+            client_display_name=rep.client_display_name,
             topics=e.topics,
             client_question=e.client_question,
             distilled_advice=e.distilled_advice,
@@ -109,6 +117,25 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"\nDone. {len(written)} markdown file(s) in {(_ROOT / 'data' / 'output').relative_to(_ROOT)}/")
     return 0
+
+
+def _group_segments_by_client(segments: list[CallSegment]) -> dict[tuple[str, str], list[CallSegment]]:
+    """Group segments by (first, last) so a client with multiple segments in one call
+    becomes one merged MD instead of two MDs that overwrite each other.
+    """
+    grouped: dict[tuple[str, str], list[CallSegment]] = defaultdict(list)
+    for seg in segments:
+        key = (seg.client_first_name.strip().lower(), seg.client_last_name.strip().lower())
+        grouped[key].append(seg)
+    for key in grouped:
+        grouped[key].sort(key=lambda s: s.start_utterance_idx)
+    # Preserve original first-seen order for stable output.
+    seen: dict[tuple[str, str], list[CallSegment]] = {}
+    for seg in segments:
+        key = (seg.client_first_name.strip().lower(), seg.client_last_name.strip().lower())
+        if key not in seen:
+            seen[key] = grouped[key]
+    return seen
 
 
 def _load_chat_roster(call_date: date) -> list[str]:

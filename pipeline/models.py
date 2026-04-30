@@ -31,7 +31,11 @@ class ClientResponseDoc(BaseModel):
     def slug(self) -> str:
         last = _slugify(self.client_last_name)
         first = _slugify(self.client_first_name)
-        return f"wtf_zoom-response_{self.call_date.isoformat()}_{last}-{first}"
+        # Drop placeholder/empty name parts so we never emit "_-robin" or
+        # "_unknown-christoph"-style filenames.
+        parts = [p for p in (last, first) if p and p != "unknown"]
+        slug_tail = "-".join(parts) if parts else "unknown"
+        return f"wtf_zoom-response_{self.call_date.isoformat()}_{slug_tail}"
 
     def filename(self) -> str:
         return f"{self.slug()}.md"
