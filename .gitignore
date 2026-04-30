@@ -11,6 +11,11 @@ data/transcripts/
 data/output/
 data/run-*.log
 
+web/app/node_modules/
+web/app/dist/
+
+*.zip
+
 examples/
 upwork_msgs.txt
 Test Project Instructions*.md
