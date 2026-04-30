@@ -17,6 +17,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from pipeline.cleanup import clean_transcript
 from pipeline.enrich import enrich_segment
 from pipeline.models import ClientResponseDoc, TranscriptTurn
 from pipeline.render import render
@@ -59,7 +60,10 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"[transcribe] {audio.name}  cached={cache_path.exists() and not args.force}")
     call = transcribe(audio, cache_path, force=args.force, speech_model=args.speech_model)
-    print(f"             -> {len(call.utterances)} utterances, {call.duration_ms / 60_000:.1f} min")
+    print(f"             -> {len(call.utterances)} raw utterances, {call.duration_ms / 60_000:.1f} min")
+
+    call = clean_transcript(call)
+    print(f"[cleanup]    -> {len(call.utterances)} utterances after microburst merge + long-utterance split")
 
     print(f"[segment]    resolving speakers and partitioning into client blocks...")
     analysis = analyze_call(call, chat_roster, model=args.openai_model)

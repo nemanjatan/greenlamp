@@ -60,7 +60,7 @@ def transcribe(
 
     config = aai.TranscriptionConfig(
         speaker_labels=True,
-        speech_model=_resolve_speech_model(speech_model),
+        speech_models=[_resolve_speech_model(speech_model).value],
     )
     transcriber = aai.Transcriber(config=config)
     transcript = transcriber.transcribe(str(audio_path))

@@ -9,6 +9,7 @@ __pycache__/
 
 data/transcripts/
 data/output/
+data/run-*.log
 
 examples/
 upwork_msgs.txt

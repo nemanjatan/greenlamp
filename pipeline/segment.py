@@ -91,6 +91,12 @@ remarks, an open Q&A). Use the utterance indices as boundaries: \
 must not overlap. If a client is not on the call (Scott reviews them in absentia), \
 set `client_speaker_label` to the literal string 'absent'.
 
+BOUNDARIES MUST BE TIGHT. The moment Scott shifts focus to the next client — even \
+just to name them, pull up their submission, or read it aloud — that utterance \
+belongs to the NEXT segment, not the previous one. Closing pleasantries to the \
+finished client (e.g. "thanks Eric, talk to you later") stay with the previous \
+segment; everything from "Okay, next up is X..." onward is the new segment.
+
 Output strictly conforms to the schema. Do not include free-form commentary."""
 
 
