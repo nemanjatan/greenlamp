@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 from pipeline.cleanup import clean_transcript
 from pipeline.enrich import enrich_segment
 from pipeline.models import ClientResponseDoc, TranscriptTurn
+from pipeline.polish import polish
 from pipeline.render import render
 from pipeline.segment import CallSegment, analyze_call
 from pipeline.transcribe import CallTranscript, Utterance, transcribe
@@ -153,6 +154,8 @@ def _group_consecutive_speakers(utts, speaker_to_name) -> list[TranscriptTurn]:
             turns[-1].text = f"{turns[-1].text} {u.text}"
         else:
             turns.append(TranscriptTurn(speaker=label, text=u.text))
+    for t in turns:
+        t.text = polish(t.text)
     return turns
 
 

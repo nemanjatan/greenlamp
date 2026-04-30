@@ -83,19 +83,30 @@ Use the chat roster as a candidate set, but you may use names you hear in the \
 audio (introductions, when Scott calls someone by name) even if they are not in \
 the roster.
 
-2. SEGMENTS. Identify each per-client review block. A block begins when Scott \
-introduces, pins, or starts reviewing the client's submission, and ends when he \
-wraps up that review and transitions to the next thing (next client, end-of-call \
-remarks, an open Q&A). Use the utterance indices as boundaries: \
-`start_utterance_idx` is inclusive, `end_utterance_idx` is exclusive. Segments \
-must not overlap. If a client is not on the call (Scott reviews them in absentia), \
-set `client_speaker_label` to the literal string 'absent'.
+2. SEGMENTS. Identify each per-client review block. Each segment must be TIGHT \
+to that one client — capturing the client's concise question and Scott's answer \
+to it, nothing more.
 
-BOUNDARIES MUST BE TIGHT. The moment Scott shifts focus to the next client — even \
-just to name them, pull up their submission, or read it aloud — that utterance \
-belongs to the NEXT segment, not the previous one. Closing pleasantries to the \
-finished client (e.g. "thanks Eric, talk to you later") stay with the previous \
-segment; everything from "Okay, next up is X..." onward is the new segment.
+A segment STARTS at the first utterance Scott speaks specifically about THIS \
+client's submission (pulling it up, reading it, addressing them by name to begin \
+the review).
+A segment ENDS at the last utterance about that same client (the wrap-up to them).
+
+A segment must NOT include:
+- The call's general opening pleasantries (greetings, "what's up everybody", \
+weather chitchat, news of the week).
+- Shoutouts, congratulations, or community announcements unrelated to THIS \
+specific client (e.g. "Richard launched his course", "Victoria hit 1K MRR").
+- The previous client's farewell or wrap-up.
+- Bridging banter that doesn't address THIS client's submission.
+
+If material between two clients is preamble/banter that doesn't belong to either, \
+leave it out of both segments — it should be in NO segment. Segments must not overlap.
+
+If a client is not on the call (Scott reviews them in absentia), set \
+`client_speaker_label` to the literal string 'absent'. Use the utterance \
+indices as boundaries: `start_utterance_idx` is inclusive, `end_utterance_idx` \
+is exclusive.
 
 Output strictly conforms to the schema. Do not include free-form commentary."""
 
