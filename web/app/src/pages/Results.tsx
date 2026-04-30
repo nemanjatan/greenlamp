@@ -1,6 +1,7 @@
 import { ChevronDown, Download, FileText, Package, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 
 import type { Job, JobResult } from "../types";
 
@@ -96,7 +97,7 @@ function ResultCard({ r }: { r: JobResult }) {
       {open && (
         <div className="border-t border-rule p-6 bg-paper max-h-[60vh] overflow-y-auto">
           <article className="text-sm text-ink-soft leading-relaxed [&_h2]:text-ink [&_h2]:font-semibold [&_h2]:text-base [&_h2]:mt-6 [&_h2]:mb-2 [&_hr]:my-4 [&_hr]:border-rule [&_ul]:my-2 [&_ul]:pl-5 [&_ul]:list-disc [&_p]:my-2 [&_strong]:text-ink first:[&_h2]:mt-0">
-            <ReactMarkdown>{r.markdown}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkBreaks]}>{r.markdown}</ReactMarkdown>
           </article>
         </div>
       )}
