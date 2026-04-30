@@ -28,3 +28,19 @@
       0 0 24px -4px rgba(99, 102, 241, 0.45);
   }
 }
+
+/* Hide Uploadcare's "Powered by Uploadcare" branding on the upload modal.
+   Uploadcare emits the widget inside shadow DOM, so we hit it via ::part()
+   selectors plus a few safety net selectors for older / non-shadowed builds. */
+lr-source-list::part(powered-by),
+lr-blocks::part(promo),
+lr-blocks::part(powered-by-uploadcare),
+lr-file-uploader-regular::part(promo),
+.uc-powered-by,
+.source-list__foot,
+[class*="powered-by"i],
+[class*="poweredBy"i] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
