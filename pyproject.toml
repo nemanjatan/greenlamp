@@ -1,0 +1,19 @@
+[project]
+name = "wtf-zoom-pipeline"
+version = "0.1.0"
+description = "Transcribe, segment, and render Write to Freedom Zoom calls into per-client markdown documents."
+requires-python = ">=3.10"
+dependencies = [
+    "assemblyai>=0.36",
+    "openai>=1.50",
+    "pydantic>=2.7",
+    "python-dotenv>=1.0",
+    "rich>=13.7",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["pipeline*"]
