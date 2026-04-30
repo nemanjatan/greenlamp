@@ -50,3 +50,11 @@ class CreateJobRequest(BaseModel):
 
 class CreateJobResponse(BaseModel):
     id: str
+
+
+class LoginRequest(BaseModel):
+    password: str
+
+
+class AuthCheckResponse(BaseModel):
+    authenticated: bool

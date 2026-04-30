@@ -5,13 +5,20 @@ from __future__ import annotations
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import Cookie, Depends, FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from .auth import COOKIE_NAME, check_auth, login, logout, require_auth
 from .jobs import create_job, get_job, start_job
-from .schemas import CreateJobRequest, CreateJobResponse, JobDTO
+from .schemas import (
+    AuthCheckResponse,
+    CreateJobRequest,
+    CreateJobResponse,
+    JobDTO,
+    LoginRequest,
+)
 
 load_dotenv()
 
@@ -33,14 +40,39 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/api/jobs", response_model=CreateJobResponse)
+@app.post("/api/auth/login")
+def login_endpoint(req: LoginRequest, response: Response) -> dict:
+    return login(req.password, response)
+
+
+@app.post("/api/auth/logout")
+def logout_endpoint(response: Response) -> dict:
+    return logout(response)
+
+
+@app.get("/api/auth/check", response_model=AuthCheckResponse)
+def check_endpoint(
+    session: str | None = Cookie(default=None, alias=COOKIE_NAME),
+) -> AuthCheckResponse:
+    return AuthCheckResponse(**check_auth(session))
+
+
+@app.post(
+    "/api/jobs",
+    response_model=CreateJobResponse,
+    dependencies=[Depends(require_auth)],
+)
 def create_job_endpoint(req: CreateJobRequest) -> CreateJobResponse:
     job = create_job(audio_filename=req.filename)
     start_job(job.id, req.audio_url)
     return CreateJobResponse(id=job.id)
 
 
-@app.get("/api/jobs/{job_id}", response_model=JobDTO)
+@app.get(
+    "/api/jobs/{job_id}",
+    response_model=JobDTO,
+    dependencies=[Depends(require_auth)],
+)
 def get_job_endpoint(job_id: str) -> JobDTO:
     job = get_job(job_id)
     if job is None:

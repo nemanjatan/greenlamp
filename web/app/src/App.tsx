@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import { createJob, getJob } from "./api";
+import { checkAuth, createJob, getJob } from "./api";
+import { LoginScreen } from "./pages/Login";
 import { ProcessingScreen } from "./pages/Processing";
 import { ResultsScreen } from "./pages/Results";
 import { UploadScreen } from "./pages/Upload";
@@ -13,8 +14,22 @@ type Screen =
 
 const UPLOADCARE_PUBLIC_KEY = import.meta.env.VITE_UPLOADCARE_PUBLIC_KEY ?? "595e6ddaeb54ef37ea58";
 
+type AuthStatus = "checking" | "anonymous" | "authenticated";
+
 export default function App() {
+  const [authStatus, setAuthStatus] = useState<AuthStatus>("checking");
   const [screen, setScreen] = useState<Screen>({ name: "upload" });
+
+  useEffect(() => {
+    checkAuth().then((ok) => setAuthStatus(ok ? "authenticated" : "anonymous"));
+  }, []);
+
+  if (authStatus === "checking") {
+    return <div className="min-h-screen" />;
+  }
+  if (authStatus === "anonymous") {
+    return <LoginScreen onAuthenticated={() => setAuthStatus("authenticated")} />;
+  }
 
   const handleUploaded = async (audioUrl: string, filename: string) => {
     const { id } = await createJob(audioUrl, filename);
@@ -118,7 +133,15 @@ function Header({ onReset }: { onReset: () => void }) {
 function Footer() {
   return (
     <footer className="px-6 py-6 text-center text-xs text-zinc-600">
-      Built with FastAPI · OpenAI · AssemblyAI · Uploadcare
+      Developed by{" "}
+      <a
+        href="https://nemanjatanaskovic.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-zinc-400 hover:text-accent-glow transition-colors"
+      >
+        Nemanja Tanasković
+      </a>
     </footer>
   );
 }
