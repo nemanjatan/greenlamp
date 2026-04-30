@@ -47,7 +47,7 @@ export function UploadScreen({ uploadcarePublicKey, onUploaded }: Props) {
           <h2 className="text-sm font-medium text-zinc-400 mb-3">Step 1 · Upload your call recording</h2>
           <FileUploaderRegular
             pubkey={uploadcarePublicKey}
-            sourceList="local, url, dropbox, gdrive"
+            sourceList="local"
             classNameUploader="uc-dark"
             multiple={false}
             onChange={(e) => {
