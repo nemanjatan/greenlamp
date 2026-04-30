@@ -1,6 +1,5 @@
 import { FileUploaderRegular } from "@uploadcare/react-uploader";
 import "@uploadcare/react-uploader/core.css";
-import { Sparkles } from "lucide-react";
 import { useState } from "react";
 
 interface UploadedFileInfo {
@@ -30,10 +29,6 @@ export function UploadScreen({ uploadcarePublicKey, onUploaded }: Props) {
   return (
     <div className="animate-fade-in">
       <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-2 text-xs font-medium text-accent-glow mb-4 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
-          <Sparkles className="size-3" />
-          AssemblyAI · OpenAI · structured outputs
-        </div>
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
           Turn a Zoom call into <span className="bg-gradient-to-r from-accent to-accent-glow bg-clip-text text-transparent">per-client markdown</span>.
         </h1>
@@ -80,7 +75,7 @@ export function UploadScreen({ uploadcarePublicKey, onUploaded }: Props) {
       </div>
 
       <p className="text-center text-xs text-zinc-600 mt-6">
-        Files upload directly to Uploadcare CDN · processing typically 2–8 minutes depending on call length
+        Processing typically takes 2–8 minutes depending on call length
       </p>
     </div>
   );
