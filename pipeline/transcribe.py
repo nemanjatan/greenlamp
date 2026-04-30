@@ -38,17 +38,25 @@ class CallTranscript:
 
 
 def transcribe(
-    audio_path: Path | str,
-    cache_path: Path | str,
+    audio_source: Path | str,
+    cache_path: Path | str | None = None,
     *,
     api_key: str | None = None,
     force: bool = False,
     speech_model: str = "universal",
 ) -> CallTranscript:
-    audio_path = Path(audio_path)
-    cache_path = Path(cache_path)
+    """Transcribe a local audio file path OR a publicly-fetchable URL.
 
-    if cache_path.exists() and not force:
+    `audio_source` can be:
+      - Path or path-like string → uploaded to AssemblyAI from disk.
+      - http(s) URL string → AssemblyAI fetches it directly (no local download).
+
+    `cache_path` is optional; pass None to skip caching (useful for the web service).
+    """
+    is_url = isinstance(audio_source, str) and audio_source.startswith(("http://", "https://"))
+    cache_path = Path(cache_path) if cache_path else None
+
+    if cache_path and cache_path.exists() and not force:
         return _load_cache(cache_path)
 
     key = api_key or os.environ.get("ASSEMBLYAI_API_KEY")
@@ -63,7 +71,8 @@ def transcribe(
         speech_models=[_resolve_speech_model(speech_model).value],
     )
     transcriber = aai.Transcriber(config=config)
-    transcript = transcriber.transcribe(str(audio_path))
+    source = audio_source if is_url else str(Path(audio_source))
+    transcript = transcriber.transcribe(source)
 
     if transcript.status != aai.TranscriptStatus.completed:
         raise RuntimeError(
@@ -88,8 +97,9 @@ def transcribe(
         utterances=utterances,
     )
 
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    cache_path.write_text(_serialize(result), encoding="utf-8")
+    if cache_path:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(_serialize(result), encoding="utf-8")
     return result
 
 
