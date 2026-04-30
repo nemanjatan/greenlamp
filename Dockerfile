@@ -29,8 +29,9 @@ RUN pip install -e .[web]
 # Bring in the built React SPA. FastAPI mounts this when web/app/dist exists.
 COPY --from=frontend-builder /fe/dist ./web/app/dist
 
-# Railway sets PORT at runtime. Default to 8000 for local docker run.
-ENV PORT=8000
+# Hardcode 8000 to match Railway's auto-detected port from EXPOSE.
+# The $PORT interpolation pattern is finicky; matches what works in other
+# Upwork projects deployed to Railway.
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn web.api.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["uvicorn", "web.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
