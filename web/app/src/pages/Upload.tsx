@@ -33,7 +33,7 @@ export function UploadScreen({ uploadcarePublicKey, onUploaded }: Props) {
           Turn a Zoom call into <span className="bg-gradient-to-r from-accent to-accent-glow bg-clip-text text-transparent">per-client markdown</span>.
         </h1>
         <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-          Drop an MP4 or M4A. We transcribe, segment by client, distill each Q&amp;A into advice and principles, and hand you the rendered markdown.
+          Drop your call's audio recording. We transcribe, segment by client, distill each Q&amp;A into advice and principles, and hand you the rendered markdown.
         </p>
       </div>
 
