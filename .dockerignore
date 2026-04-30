@@ -1,0 +1,19 @@
+.git
+.venv
+.env
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Test deliverable artifacts and source recordings — not for the web service
+data/
+examples/
+upwork_msgs.txt
+Test Project Instructions*.md
+greenlamp-test-project*.zip
+
+# Frontend build cache + already-shipped via multi-stage build
+web/app/node_modules/
+web/app/dist/
