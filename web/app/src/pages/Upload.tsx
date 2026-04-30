@@ -28,22 +28,29 @@ export function UploadScreen({ uploadcarePublicKey, onUploaded }: Props) {
 
   return (
     <div className="animate-fade-in">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
-          Turn a Zoom call into <span className="bg-gradient-to-r from-accent to-accent-glow bg-clip-text text-transparent">per-client markdown</span>.
+      <div className="text-center mb-12">
+        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-5 text-ink">
+          Turn a Zoom call into{" "}
+          <span className="font-script font-bold text-gold-deep text-[1.15em] leading-none">
+            per-client markdown
+          </span>
+          .
         </h1>
-        <p className="text-zinc-400 text-lg max-w-xl mx-auto">
+        <p className="text-ink-soft text-lg max-w-xl mx-auto leading-relaxed">
           Drop your call's audio recording. We transcribe, segment by client, distill each Q&amp;A into advice and principles, and hand you the rendered markdown.
         </p>
       </div>
 
-      <div className="glass rounded-2xl p-8 sm:p-10 shadow-2xl">
-        <div className="mb-6">
-          <h2 className="text-sm font-medium text-zinc-400 mb-3">Step 1 · Upload your call recording</h2>
+      <div className="card p-8 sm:p-10">
+        <div className="mb-2 flex items-baseline gap-2">
+          <span className="font-script text-2xl text-gold-deep leading-none">Step 1</span>
+          <span className="text-sm text-ink-mute">· Upload your call recording</span>
+        </div>
+        <div className="mt-4">
           <FileUploaderRegular
             pubkey={uploadcarePublicKey}
             sourceList="local"
-            classNameUploader="uc-dark"
+            classNameUploader="uc-light"
             multiple={false}
             onChange={(e) => {
               const f = e.allEntries.find((entry) => entry.status === "success");
@@ -55,18 +62,17 @@ export function UploadScreen({ uploadcarePublicKey, onUploaded }: Props) {
         </div>
 
         {uploaded?.cdnUrl && (
-          <div className="border-t border-white/5 pt-6 animate-fade-in">
-            <h2 className="text-sm font-medium text-zinc-400 mb-3">Step 2 · Process</h2>
+          <div className="border-t border-rule pt-6 mt-6 animate-fade-in">
+            <div className="mb-3 flex items-baseline gap-2">
+              <span className="font-script text-2xl text-gold-deep leading-none">Step 2</span>
+              <span className="text-sm text-ink-mute">· Process</span>
+            </div>
             <div className="flex items-center justify-between gap-4 flex-wrap">
-              <div className="text-sm text-zinc-300 truncate flex-1">
-                <span className="text-zinc-500">Ready: </span>
-                <span className="font-mono">{uploaded.name}</span>
+              <div className="text-sm text-ink-soft truncate flex-1">
+                <span className="text-ink-mute">Ready: </span>
+                <span className="font-mono text-ink">{uploaded.name}</span>
               </div>
-              <button
-                disabled={submitting}
-                onClick={handleSubmit}
-                className="px-6 py-2.5 rounded-lg bg-gradient-to-br from-accent to-accent-glow font-medium text-sm shadow-lg shadow-accent/20 hover:shadow-accent/40 transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <button disabled={submitting} onClick={handleSubmit} className="btn-primary">
                 {submitting ? "Starting…" : "Run pipeline →"}
               </button>
             </div>
@@ -74,7 +80,7 @@ export function UploadScreen({ uploadcarePublicKey, onUploaded }: Props) {
         )}
       </div>
 
-      <p className="text-center text-xs text-zinc-600 mt-6">
+      <p className="text-center text-xs text-ink-mute mt-6">
         Processing typically takes 2–8 minutes depending on call length
       </p>
     </div>

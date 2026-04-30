@@ -107,22 +107,22 @@ function PollingProcessingScreen({
 
 function Header({ onReset }: { onReset: () => void }) {
   return (
-    <header className="px-6 py-5 border-b border-white/5">
+    <header className="px-6 py-5 border-b border-rule bg-paper/70 backdrop-blur">
       <div className="mx-auto max-w-6xl flex items-center justify-between">
         <button
           onClick={onReset}
-          className="flex items-center gap-2.5 group"
+          className="flex items-center gap-3 group"
           title="Start over"
         >
-          <span className="size-8 rounded-lg bg-gradient-to-br from-accent to-accent-glow grid place-items-center font-semibold text-sm text-white">
+          <span className="size-9 rounded-lg bg-ink grid place-items-center font-semibold text-sm text-paper">
             W
           </span>
-          <span className="font-semibold tracking-tight">
+          <span className="font-semibold tracking-tight text-ink">
             Write to Freedom
-            <span className="text-zinc-500 font-normal"> · Zoom Pipeline</span>
+            <span className="text-ink-mute font-normal"> · Zoom Pipeline</span>
           </span>
         </button>
-        <span className="text-xs text-zinc-500 hidden sm:inline">
+        <span className="text-xs text-ink-mute hidden sm:inline">
           Drop a Zoom recording → get per-client markdown
         </span>
       </div>
@@ -132,13 +132,13 @@ function Header({ onReset }: { onReset: () => void }) {
 
 function Footer() {
   return (
-    <footer className="px-6 py-6 text-center text-xs text-zinc-600">
+    <footer className="px-6 py-6 text-center text-xs text-ink-mute">
       Developed by{" "}
       <a
         href="https://nemanjatanaskovic.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-zinc-400 hover:text-accent-glow transition-colors"
+        className="text-ink-soft hover:text-gold transition-colors"
       >
         Nemanja Tanasković
       </a>

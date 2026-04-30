@@ -35,13 +35,13 @@ export function LoginScreen({ onAuthenticated }: Props) {
     <div className="min-h-screen flex items-center justify-center px-6">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm glass rounded-2xl p-8 shadow-2xl animate-fade-in"
+        className="w-full max-w-sm card p-8 animate-fade-in"
       >
-        <div className="size-12 rounded-xl bg-gradient-to-br from-accent to-accent-glow grid place-items-center mb-5">
-          <Lock className="size-5 text-white" />
+        <div className="size-11 rounded-lg bg-gold-tint border border-gold/30 grid place-items-center mb-5">
+          <Lock className="size-5 text-gold-deep" />
         </div>
-        <h1 className="text-xl font-semibold tracking-tight mb-1">Private demo</h1>
-        <p className="text-sm text-zinc-400 mb-6">
+        <h1 className="text-xl font-semibold tracking-tight mb-1 text-ink">Private demo</h1>
+        <p className="text-sm text-ink-soft mb-6">
           Enter the access password to use the pipeline.
         </p>
         <input
@@ -50,15 +50,13 @@ export function LoginScreen({ onAuthenticated }: Props) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="w-full px-4 py-2.5 rounded-lg bg-zinc-900/60 border border-white/10 text-sm placeholder:text-zinc-600 focus:outline-none focus:border-accent/50 focus:ring-2 focus:ring-accent/20 transition"
+          className="w-full px-4 py-2.5 rounded-lg bg-paper border border-rule text-sm placeholder:text-ink-mute focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition"
         />
-        {error && (
-          <div className="mt-3 text-sm text-rose-300">{error}</div>
-        )}
+        {error && <div className="mt-3 text-sm text-rose-600">{error}</div>}
         <button
           type="submit"
           disabled={submitting || !password}
-          className="mt-5 w-full px-4 py-2.5 rounded-lg bg-gradient-to-br from-accent to-accent-glow font-medium text-sm shadow-lg shadow-accent/20 hover:shadow-accent/40 transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-5 w-full btn-primary"
         >
           {submitting ? "Checking…" : "Continue →"}
         </button>
